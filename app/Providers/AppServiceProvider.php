@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Deck;
 use App\User;
 use App\Observers\UserObserver;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        Schema::defaultStringLength(191);
+
         $this->app->bind(Deck::class, function () {
             return Deck::shuffled();
         });
