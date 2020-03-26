@@ -4,9 +4,9 @@ namespace App;
 
 class Deck
 {
-    public static $suits = ['Heart', 'Spade', 'Diamond', 'Club'];
-    public static $values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
-    public $cards = [];
+    protected static $suits = ['Heart', 'Spade', 'Diamond', 'Club'];
+    protected static $values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14];
+    protected $cards = [];
 
     public function __construct($cards = [])
     {
