@@ -32,8 +32,8 @@ class Game extends Model
         $game = Game::create([
             'next_turn' => 1,
             'start_turn' => 1,
-            'points_to_win' => 52,
-            'status' => GameStatus::TEAM_SELECTION
+            'status' => GameStatus::TEAM_SELECTION,
+            'points_to_win' => static::defaultPointsToWin(),
         ]);
 
         foreach ($players as $key => $player) {
