@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+Route::post('user', 'UserController@store');
+
+Route::middleware('auth:api')->group(function ($route) {
+    $route->get('user', 'UserController@show');
+    $route->resource('game/{game}/message', 'GameMessageController')->only('index', 'store');;
+    $route->resource('game/{game}/player/card', 'GamePlayerCardController')->only('index');
+    $route->resource('game/{game}/player', 'GamePlayerController')->only('store', 'show', 'update');
+    $route->resource('game', 'GameController')->only('store', 'show', 'update');;
 });

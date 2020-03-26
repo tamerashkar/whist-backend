@@ -2,10 +2,17 @@
 
 namespace App\Providers;
 
+use App\Deck;
+use App\User;
+use App\Observers\UserObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+    public static $observers = [
+        User::class => UserObserver::class
+    ];
+
     /**
      * Register any application services.
      *
@@ -13,7 +20,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->bind(Deck::class, function () {
+            return Deck::shuffled();
+        });
     }
 
     /**
@@ -23,6 +32,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        foreach (static::$observers as $model => $observer) {
+            $model::observe($observer);
+        }
     }
 }
