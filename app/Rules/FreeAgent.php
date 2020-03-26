@@ -9,6 +9,7 @@ use Illuminate\Contracts\Validation\Rule;
 class FreeAgent implements Rule
 {
     protected $game;
+    protected $robot;
     protected $player;
 
     /**
@@ -16,9 +17,10 @@ class FreeAgent implements Rule
      *
      * @return void
      */
-    public function __construct(Game $game, Player $player)
+    public function __construct(Game $game, Player $player, $robot = false)
     {
         $this->game = $game;
+        $this->robot = $robot;
         $this->player = $player;
     }
 
@@ -31,7 +33,7 @@ class FreeAgent implements Rule
      */
     public function passes($attribute, $value)
     {
-        return !$this->player->joined($this->game);
+        return $this->robot || !$this->player->joined($this->game);
     }
 
     /**

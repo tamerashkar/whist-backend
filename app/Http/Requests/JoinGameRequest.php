@@ -31,7 +31,7 @@ class JoinGameRequest extends FormRequest
                 'required',
                 new TeamExists($this->game),
                 new EmptyPosition($this->game),
-                new FreeAgent($this->game, $this->user()->player),
+                new FreeAgent($this->game, $this->user()->player, $this->robot),
             ]
         ];
     }

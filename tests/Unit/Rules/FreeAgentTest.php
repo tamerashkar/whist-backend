@@ -30,4 +30,14 @@ class FreeAgentTest extends TestCase
 
         $this->assertFalse((new FreeAgent($game, $player))->passes('team', Game::HOME_TEAM));
     }
+
+    /** @test */
+    function returns_true_when_player_is_a_robot()
+    {
+        $game = Game::setup();
+        $player = factory(Player::class)->create();
+        $player->join($game, Game::HOME_TEAM);
+
+        $this->assertTrue((new FreeAgent($game, $player, $robot = true))->passes('team', Game::HOME_TEAM));
+    }
 }

@@ -63,13 +63,18 @@ class Player extends Model
         return $this->cardsForGame($game)->where('suit', $suit);
     }
 
-
     public function join(Game $game, $team)
     {
         $game->players()->attach($this->id, [
             'team' => $team,
             'position' => $game->playersForTeam($team)->count() * 2 + 1 * $team,
         ]);
+        return $this;
+    }
+
+    public function leave(Game $game)
+    {
+        $game->players()->detach($this->id);
         return $this;
     }
 

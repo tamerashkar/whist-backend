@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Card;
 use App\Game;
+use App\Robot;
 use App\Player;
 use Illuminate\Http\Request;
 use App\Events\PlayerHasBid;
 use App\Events\PlayerHasJoinedTeam;
+use App\Events\PlayerHasLeftTeam;
 use App\Events\PlayerHasPlayedCard;
 use App\Http\Requests\JoinGameRequest;
 use App\Http\Resources\PlayerResource;
@@ -17,11 +20,24 @@ class GamePlayerController extends Controller
 {
     public function store(JoinGameRequest $request, Game $game)
     {
-        $player = $request->user()->player->join($game, $request->team);
+        if ($request->robot) {
+            $player = $this->createRobot()->join($game, $request->team);
+        } else {
+            $player = $request->user()->player->join($game, $request->team);
+        }
 
         event(new PlayerHasJoinedTeam($game, $player, $request->team));
 
         return $this->show($game, $player);
+    }
+
+    public function createRobot()
+    {
+        return Player::create([
+            'robot' => true,
+            'name' => Robot::randomName(),
+            'user_id' => User::first()->id
+        ]);
     }
 
     public function show(Game $game, Player $player)
@@ -39,6 +55,19 @@ class GamePlayerController extends Controller
             $this->play($request, $game, $player);
         }
         return $this->show($game, $player);
+    }
+
+    public function destroy(Request $request, Game $game, Player $player)
+    {
+        if ($player = $game->player($player)->first()) {
+            $team = $player->pivot->team;
+
+            $player->leave($game);
+
+            event(new PlayerHasLeftTeam($game, $player, $team));
+        }
+
+        return true;
     }
 
     protected function bid(UpdateGamePlayerRequest $request, Game $game, Player $player)

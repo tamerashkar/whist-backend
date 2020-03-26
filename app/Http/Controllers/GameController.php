@@ -19,7 +19,9 @@ class GameController extends Controller
      */
     public function store(StoreGameRequest $request)
     {
-        return new GameResource(Game::setup()->withLazyLoads());
+        return new GameResource(
+            Game::setup([$request->user()->player])->withLazyLoads()
+        );
     }
 
     /**

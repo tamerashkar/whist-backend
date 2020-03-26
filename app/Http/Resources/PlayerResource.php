@@ -17,6 +17,7 @@ class PlayerResource extends JsonResource
         return [
             'id' => (string) $this->id,
             'name' => $this->name,
+            'robot' => (bool) $this->robot,
             $this->mergeWhen($this->pivot, function () {
                 return [
                     'bid' => $this->pivot->bid,

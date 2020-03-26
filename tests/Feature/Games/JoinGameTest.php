@@ -18,6 +18,7 @@ class JoinGameTest extends TestCase
     {
         return array_merge([
             'team' => Game::HOME_TEAM,
+            'robot' => false
         ], $overrides);
     }
 
@@ -38,6 +39,26 @@ class JoinGameTest extends TestCase
             $this->assertEquals(1, $game->players()->first()->pivot->position);
             $this->assertEquals($user->player->id, $game->players()->first()->id);
             $this->assertEquals($user->player->name, $game->players()->first()->name);
+        });
+    }
+
+    /** @test */
+    function adds_robot_to_game()
+    {
+        $this->disableExceptionHandling();
+        $user = $this->loginWithPermission();
+        $game = factory(Game::class)->create();
+        $user->player->join($game, Game::HOME_TEAM);
+
+        $response = $this->json('POST', "api/game/{$game->id}/player", [
+            'team' => Game::HOME_TEAM,
+            'robot' => true
+        ]);
+
+        $response->assertStatus(200);
+        tap($game->fresh(), function ($game) use ($user) {
+            $this->assertEquals(2, $game->players()->count());
+            $this->assertSame(1, $game->players()->where('robot', true)->count());
         });
     }
 

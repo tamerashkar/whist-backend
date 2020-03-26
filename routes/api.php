@@ -20,6 +20,6 @@ Route::middleware('auth:api')->group(function ($route) {
     $route->get('user', 'UserController@show');
     $route->resource('game/{game}/message', 'GameMessageController')->only('index', 'store');;
     $route->resource('game/{game}/player/card', 'GamePlayerCardController')->only('index');
-    $route->resource('game/{game}/player', 'GamePlayerController')->only('store', 'show', 'update');
+    $route->resource('game/{game}/player', 'GamePlayerController')->only('store', 'show', 'update', 'destroy');
     $route->resource('game', 'GameController')->only('store', 'show', 'update');;
 });
