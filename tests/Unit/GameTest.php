@@ -695,6 +695,18 @@ class GameTest extends TestCase
     }
 
     /** @test */
+    function selects_no_round_winner_when_there_is_no_winner()
+    {
+        $players = factory(Player::class, 4)->create();
+        $game = Game::setup($players)->start($players->get(0));
+        $this->makeBids($game, $players, [0, 0, 0, 0]);
+
+        $game->selectRoundWinner();
+
+        $this->assertNull($game->round());
+    }
+
+    /** @test */
     function returns_true_when_game_has_ended_with_a_winner()
     {
         $players = factory(Player::class, 4)->create();

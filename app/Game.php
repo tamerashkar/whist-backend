@@ -464,21 +464,22 @@ class Game extends Model
     public function selectRoundWinner()
     {
         DB::transaction(function () {
-            $bidWinner = $this->bidWinner();
-            $homeTeamPoints = $this->homeTeamPointsForRound();
-            $guestTeamPoints = $this->guestTeamPointsForRound();
+            if ($this->hasBidWinner()) {
+                $bidWinner = $this->bidWinner();
+                $homeTeamPoints = $this->homeTeamPointsForRound();
+                $guestTeamPoints = $this->guestTeamPointsForRound();
+                $this->rounds()->create([
+                    'bid_winner' => $bidWinner->id,
+                    'bid' => $bidWinner->pivot->bid,
+                    'home_team_points' => $homeTeamPoints,
+                    'guest_team_points' => $guestTeamPoints,
+                ]);
 
-            $this->rounds()->create([
-                'bid_winner' => $bidWinner->id,
-                'bid' => $bidWinner->pivot->bid,
-                'home_team_points' => $homeTeamPoints,
-                'guest_team_points' => $guestTeamPoints,
-            ]);
-
-            $this->update([
-                'home_team_points' => $this->home_team_points + $homeTeamPoints,
-                'guest_team_points' => $this->guest_team_points + $guestTeamPoints,
-            ]);
+                $this->update([
+                    'home_team_points' => $this->home_team_points + $homeTeamPoints,
+                    'guest_team_points' => $this->guest_team_points + $guestTeamPoints,
+                ]);
+            }
         });
 
         return $this;
