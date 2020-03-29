@@ -5,7 +5,7 @@ namespace App\Events;
 use App\Game;
 use App\Player;
 
-class PlayerHasBid extends GameEvent implements Announceable
+class PlayerHasBid extends GameEvent
 {
     public $bid;
     public $game;

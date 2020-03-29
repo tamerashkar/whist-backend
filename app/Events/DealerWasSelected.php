@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-class DealerWasSelected extends GameEvent implements Announceable
+class DealerWasSelected extends GameEvent
 {
     public function message(): array
     {
